@@ -95,7 +95,7 @@ class App extends Component {
 
 export default App;
 
-let id = 0
+let id = 1
 
  function idMaker(){
   id += 1
