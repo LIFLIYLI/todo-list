@@ -31,7 +31,7 @@ class App extends Component {
 
     return (
       <div className="App">
-        <h1>{this.state.user.username||'我'}的待办
+        <h1>{this.state.user.username||'我'}的待办事件
           {this.state.user.id ? <button onClick={this.signOut.bind(this)}>登出</button> : null}
         </h1>
         <div className="inputWrapper">
