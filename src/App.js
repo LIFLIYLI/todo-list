@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
-import './App.css';
+import 'normalize.css'
 import './reset.css'
+import './App.css';
 import TodoInput from './TodoInput'
 import TodoItem from './TodoItem'
-import 'normalize.css'
+import UserDialog from './UserDialog'
+import {getCurrentUser, signOut} from './leanCloud'
 
 class App extends Component {
   constructor(props){
     super(props)
     this.state = {
+      user: getCurrentUser() || {},
       newTodo: '',
-      todoList: [
-        {id:1, title:'第一个待办'},
-        {id:2, title:'第二个待办'},
-      ]
+      todoList: []
     }
   }
   render() {
@@ -31,7 +31,9 @@ class App extends Component {
 
     return (
       <div className="App">
-         <h1>我的待办</h1>
+        <h1>{this.state.user.username||'我'}的待办
+          {this.state.user.id ? <button onClick={this.signOut.bind(this)}>登出</button> : null}
+        </h1>
         <div className="inputWrapper">
         <TodoInput content={this.state.newTodo} 
             onChange={this.changeTitle.bind(this)}
@@ -40,18 +42,36 @@ class App extends Component {
         <ol className="todoList">
           {todos}
         </ol>
+        {this.state.user.id ? 
+          null : 
+          <UserDialog 
+          onSignUp={this.onSignUpOrSignIn.bind(this)} 
+          onSignIn={this.onSignUpOrSignIn.bind(this)}/>}
       </div>
     )
   }
+  signOut(){
+    signOut()
+    let stateCopy = JSON.parse(JSON.stringify(this.state))
+    stateCopy.user = {}
+    this.setState(stateCopy)
+  }
+  onSignUpOrSignIn(user){
+    let stateCopy = JSON.parse(JSON.stringify(this.state)) 
+    stateCopy.user = user
+    this.setState(stateCopy)
+  }
+  componentDidUpdate(){  
+  }
   toggle(e, todo){
     todo.status = todo.status === 'completed' ? '' : 'completed'
-    this.setState(this.state) 
+    this.setState(this.state)
   }
   changeTitle(event){
     this.setState({
       newTodo: event.target.value,
       todoList: this.state.todoList
-    })
+    }) 
   }
   addTodo(event){
     this.state.todoList.push({
@@ -63,17 +83,20 @@ class App extends Component {
     this.setState({
       newTodo: '',
       todoList: this.state.todoList
-    })
+    })   
   }
+  
   delete(event, todo){
     todo.deleted = true
-    this.setState(this.state) 
+    this.setState(this.state)
+   
   }
 }
 
 export default App;
 
 let id = 0
+
  function idMaker(){
   id += 1
   return id
