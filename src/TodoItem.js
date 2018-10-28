@@ -13,7 +13,7 @@ import './TodoItem.css'
       )
     }
     toggle(e){
-      this.props.onToggle(e, this.props.todo)
+      this.props.onToggle(e, this.props.todo)      
   }
   delete(e){
     this.props.onDelete(e, this.props.todo)

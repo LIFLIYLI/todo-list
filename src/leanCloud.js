@@ -6,7 +6,8 @@ AV.init({
   appId: APP_ID,
   appKey: APP_KEY
 })
-
+var TestObject = AV.Object.extend('TestObject')
+var testObject = new TestObject()
  export default AV
 
  export function signUp(username, password, successFn, errorFn){
@@ -31,6 +32,7 @@ AV.init({
     AV.User.logIn(username, password).then(function (loginedUser) {
       let user = getUserFromAVUser(loginedUser)
       successFn.call(null, user)
+
     }, function (error) {
       errorFn.call(null, error)
     })

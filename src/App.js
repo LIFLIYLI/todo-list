@@ -6,6 +6,9 @@ import TodoInput from './TodoInput'
 import TodoItem from './TodoItem'
 import UserDialog from './UserDialog'
 import {getCurrentUser, signOut} from './leanCloud'
+import AV from 'leancloud-storage'
+var TestObject = AV.Object.extend('TestObject')
+var testObject = new TestObject()
 
 class App extends Component {
   constructor(props){
@@ -13,7 +16,7 @@ class App extends Component {
     this.state = {
       user: getCurrentUser() || {},
       newTodo: '',
-      todoList: []
+      todoList: [],   
     }
   }
   render() {
@@ -27,7 +30,6 @@ class App extends Component {
         </li>
       )
     })
-
 
     return (
       <div className="App">
@@ -55,13 +57,37 @@ class App extends Component {
     let stateCopy = JSON.parse(JSON.stringify(this.state))
     stateCopy.user = {}
     this.setState(stateCopy)
+    console.log('我出去了')
   }
+
   onSignUpOrSignIn(user){
-    let stateCopy = JSON.parse(JSON.stringify(this.state)) 
+    let stateCopy = JSON.parse(JSON.stringify(this.state))
     stateCopy.user = user
+
     this.setState(stateCopy)
+    console.log('我警来了') 
+                     //********* */
+                     var query = new AV.Query('TestObject');
+                     query.equalTo('user', this.state.user.username);
+                     let todolists = [];
+                     query.find().then(function (lists) {
+                       //var obj = results[0];                     
+                       lists.forEach(function(list) {
+                         let todolist = list.get('kk')
+                         todolists.push(todolist);
+                       })               
+                     })
+                     setTimeout(()=>{
+                       this.setState({
+                         todoList:todolists[0]
+                       })
+                      console.log(todolists)
+                      console.log('todo怎么样')
+                      //** */    
+                     },200)
   }
-  componentDidUpdate(){  
+  componentDidUpdate(){ 
+
   }
   toggle(e, todo){
     todo.status = todo.status === 'completed' ? '' : 'completed'
@@ -73,7 +99,7 @@ class App extends Component {
       todoList: this.state.todoList
     }) 
   }
-  addTodo(event){
+  addTodo(event){ 
     this.state.todoList.push({
       id: idMaker(),
       title: event.target.value,
@@ -83,14 +109,24 @@ class App extends Component {
     this.setState({
       newTodo: '',
       todoList: this.state.todoList
-    })   
-  }
-  
+    })
+    testObject.save({
+      kk: this.state.todoList,
+      user:this.state.user.username
+    }).then(function(object) {
+      alert('我记录了')
+    })
+  }    
   delete(event, todo){
     todo.deleted = true
-    this.setState(this.state)
-   
-  }
+    this.setState(this.state) 
+    testObject.save({
+      kk: this.state.todoList,
+      user:this.state.user.username
+    }).then(function(object) {
+      alert('我删除了')
+    })         
+  } 
 }
 
 export default App;
