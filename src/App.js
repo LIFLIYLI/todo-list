@@ -77,21 +77,23 @@ class App extends Component {
                          todolists.push(todolist);
                          console.log('哪里')
                          console.log(todolists)  
-                  
                        })               
                      })             
                      setTimeout(()=>{
                       console.log('这里')
                       console.log(todolists) 
-                      if(todolists=[]){
-                        console.log('真的找不到')
-                      } else{
-                        console.log('不会是着了啊')
-                        this.setState({
-                          todoList:todolists[0]
-                        })       
-                      }
-
+                        if(todolists.length>0){
+                          console.log(todolists)
+                          console.log('这里能找到') 
+                          this.setState({
+                            todoList:todolists[0]
+                          })                               
+                        }else{
+                          this.setState({
+                            todoList:[]
+                          })
+                          console.log('真的找不到')                                              
+                        }                  
                       },200)
   }
   componentDidUpdate(){ 
