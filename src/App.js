@@ -68,25 +68,30 @@ class App extends Component {
     console.log('我警来了') 
                      //********* */
                      var query = new AV.Query('TestObject');
-                     query.equalTo('user', this.state.user.username);
-                     
+                     query.equalTo('user', this.state.user.username);                     
                      let todolists = [];
                      query.find().then(function (lists) {                   
-                       //var obj = results[0];                     
+                       //var obj = results[0];                                           
                        lists.forEach(function(list) {
                          let todolist = list.get('kk')
-                         todolists.push(todolist); 
-                         console.log('谁快一点')                     
+                         todolists.push(todolist);
+                         console.log('哪里')
+                         console.log(todolists)  
+                  
                        })               
-                     })
+                     })             
                      setTimeout(()=>{
-                       if(todolists=[]){
-                        console.log('没有')
-                       } else{
+                      console.log('这里')
+                      console.log(todolists) 
+                      if(todolists=[]){
+                        console.log('真的找不到')
+                      } else{
+                        console.log('不会是着了啊')
                         this.setState({
                           todoList:todolists[0]
-                        })
-                          }  
+                        })       
+                      }
+
                       },200)
   }
   componentDidUpdate(){ 
